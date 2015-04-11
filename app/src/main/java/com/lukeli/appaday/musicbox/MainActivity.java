@@ -1,5 +1,6 @@
 package com.lukeli.appaday.musicbox;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +25,8 @@ public class MainActivity extends ActionBarActivity {
     private String hours,minutes,seconds,milliseconds;
     private long secs,mins,hrs,msecs;
     MediaPlayer mPlayer;
+    final Context context = this;
+
 
 
 
@@ -60,6 +64,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void startCountdown(View view) {
         showStopButton();
+
         mPlayer.start();
         endTime = System.currentTimeMillis() + duration;
         mHandler.removeCallbacks(startTimer);
@@ -73,7 +78,9 @@ public class MainActivity extends ActionBarActivity {
 
     public void stopCountdown(View view) {
         hideStopButton();
-        mPlayer.pause();
+        if(mPlayer.isPlaying()) {
+            mPlayer.pause();
+        } 
         mHandler.removeCallbacks(startTimer);
         stopped = true;
     }
@@ -112,6 +119,7 @@ public class MainActivity extends ActionBarActivity {
             updateTimer(timeLeft);
             if(timeLeft<=0){
                 mPlayer.stop();
+                mPlayer = MediaPlayer.create(context, R.raw.gsd);
                 mHandler.removeCallbacks(startTimer);
                 stopped = true;
             }else{
